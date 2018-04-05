@@ -2,15 +2,95 @@
 
 println("UW Homework: Simple Kotlin")
 
+
 // write a "whenFn" that takes an arg of type "Any" and returns a String
+fun whenFn(arg : Any) : String {
+  if (arg.toString().contains(".")) {
+    return "I don't understand"
+  }
+  when (arg) {
+    "Hello" -> return "world"
+    "Howdy", "Bonjour" -> return "Say what?"
+    0 -> return "zero"
+    1 -> return "one"
+    in 2..10 -> return "low number"
+    !in 0..10 -> return "a number"
+  }
+  return "I don't understand"
+}
 
 // write an "add" function that takes two Ints, returns an Int, and adds the values
+fun add(i1 : Int, i2 : Int) : Int {
+  return i1 + i2
+}
 // write a "sub" function that takes two Ints, returns an Int, and subtracts the values
+fun sub(i1 : Int, i2 : Int) : Int {
+  return i1-i2
+}
 // write a "mathOp" function that takes two Ints and a function (that takes two Ints and returns an Int), returns an Int, and applies the passed-in-function to the arguments
-
+fun mathOp(i1 : Int, i2 : Int, op: (i3 : Int, i4 : Int) -> Int) : Int {
+  return op(i1,i2)
+}
 // write a class "Person" with first name, last name and age
+class Person(firstName : String, lastName : String, age: Int) {
+  var firstName : String
+  var lastName: String
+  var age : Int
+  val debugString : String
+    get(){
+      return "[Person firstName:$firstName lastName:$lastName age:$age]"
+    }
+  init{
+    this.firstName = firstName
+    this.lastName = lastName
+    this.age = age
+  }
+
+  override fun equals(other: Any?): Boolean{
+    if (this === other &&
+      this.firstName == other.firstName &&
+      this.lastName == other.lastName &&
+      this.age == other.age) return true
+    return false
+  }
+
+  override fun hashCode(): Int{
+    return debugString.hashCode()
+  }
+
+}
 
 // write a class "Money"
+class Money(amount: Int, currency: String) {
+  var amount : Int
+  var currency: String
+  val conversionTable:HashMap<String, Double> = hashMapOf("USD" to 1.0, "GBP" to 0.5, "EUR" to 1.5, "CAN" to 1.25)
+  init{
+    if (amount >= 0) {
+      this.amount = amount
+    } else {
+      this.amount = 0
+    }
+    if (currency == "USD" || currency == "GBP" || currency == "EUR" || currency == "CAN") {
+      this.currency = currency
+    } else {
+      this.currency = "USD"
+    }
+
+  }
+  fun convert(to : String): Money {
+    if (to == "USD" || to == "GBP" || to == "EUR" || to == "CAN"){
+      val divide = this.conversionTable[this.currency] ?: 1.0
+      val multi = this.conversionTable[to] ?: 1.0
+      return Money((this.amount.toDouble()/divide*multi).toInt(), to)
+    }
+    return this
+  }
+
+  operator infix fun plus(other : Money): Money {
+    return Money(this.amount + other.convert(this.currency).amount, this.currency)
+  }
+}
 
 // ============ DO NOT EDIT BELOW THIS LINE =============
 
